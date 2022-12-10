@@ -1,6 +1,6 @@
 let removeElement = false
-const onIcon = "icons/PatOn.png"
-const offTicon = "icons/PatOff.png"
+const onIcon = "./icons/PatOn.png"
+const offTicon = "./icons/PatOff.png"
 
 setDefaultIcon = (tabId) => {
     removeElement = false
@@ -15,11 +15,13 @@ setDefaultIcon = (tabId) => {
 // when tabs get changed, setDefaultIcon is called
 chrome.tabs.onActivated.addListener((activeInfo) => setDefaultIcon(activeInfo.tabId))
 
-chrome.browserAction.onClicked.addListener((tab) => {
-    removeElement = !removeElement
-    chrome.browserAction.setIcon({ path: removeElement ? onIcon : offTicon })
-    chrome.tabs.sendMessage(tab.id, removeElement)
-})
+try {
+    chrome.action.onClicked.addListener((tab) => {
+        removeElement = !removeElement
+        chrome.action.setIcon({ path: removeElement ? onIcon : offTicon })
+        chrome.tabs.sendMessage(tab.id, removeElement)
+    })
+} catch (error) { }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     status = changeInfo.status
